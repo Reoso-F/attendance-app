@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>欠席編集</title></head>
+<body>
+    <h2>{{ date }} の {{ record.name }}（{{ record.classroom }}）の編集</h2>
+    <form method="post">
+        <label>欠席理由：<br>
+            <textarea name="reason" rows="4" cols="40">{{ record.reason or '' }}</textarea>
+        </label><br><br>
+        <label>
+            <input type="checkbox" name="submitted" {% if record.document_submitted %}checked{% endif %}>
+            書類提出済み
+        </label><br><br>
+        <button type="submit">保存</button>
+        <a href="{{ url_for('index', date=date) }}">戻る</a>
+    </form>
+</body>
+</html>

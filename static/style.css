@@ -1,0 +1,140 @@
+/* 共通 */
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+main {
+    padding: 20px;
+}
+.centered {
+    text-align: center;
+}
+
+/* ナビゲーション */
+nav {
+    background-color: #007BFF;
+    padding: 10px;
+}
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+nav li {
+    margin: 0;
+}
+nav a {
+    text-decoration: none;
+    color: white;
+    background-color: #0056b3;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+nav a:hover {
+    background-color: #004080;
+}
+
+/* 日付選択フォーム */
+.big-input {
+    padding: 10px 12px;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.big-button {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.big-button:hover {
+    background-color: #0056b3;
+}
+.status-text {
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+/* 教室テーブル */
+.classroom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f0f0f0;
+}
+.classroom-table th,
+.classroom-table td {
+    border: 1px solid #ccc;
+    padding: 4px;
+    text-align: center;
+    vertical-align: top;
+}
+
+/* 各教室の内部テーブル */
+
+.inner-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin: 0 auto;
+    table-layout: fixed;
+}
+/* 内部テーブルの列幅等分 */
+.inner-table th,
+.inner-table td {
+    width: 25%;
+    text-align: center;
+    vertical-align: middle;
+    padding: 6px;
+}
+.inner-table th {
+    background-color: #e0e0e0;
+}
+
+/* チェックボックスを中央寄せに */
+.inner-table input[type="checkbox"] {
+    transform: scale(1.3);
+    display: block;
+    margin: 0 auto;
+}
+
+/* 編集・削除ボタン */
+.action-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 120px;
+}
+.edit-button,
+.delete-button {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    width: 80px;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.edit-button {
+    background-color: #007BFF;
+    color: white;
+}
+.edit-button:hover {
+    background-color: #0056b3;
+}
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+.delete-button:hover {
+    background-color: #a71d2a;
+}

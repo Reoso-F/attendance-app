@@ -1,27 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>出席確認</title>
-</head>
-<body>
-    <h2>{{ selected_date }} の欠席・欠課</h2>
+{% extends "base.html" %}
+
+{% block title %}トップページ{% endblock %}
+
+{% block content %}
+<h2>{{ selected_date }} の出席確認</h2>
+
     <form method="get">
-        <input type="date" name="date" value="{{ selected_date }}">
+        <label>日付：
+            <input type="date" name="date" value="{{ selected_date }}">
+        </label>
         <button type="submit">表示</button>
     </form>
 
-    <table border="1">
+    <br>
+
+    <table>
         <tr>
-            <th>名前</th><th>教室</th><th>理由</th><th>書類提出</th>
+            <th>氏名</th>
+            <th>教室</th>
+            <th>欠席理由</th>
+            <th>欠課理由</th>
+            <th>書類提出</th>
+            <th>訂正印欄</th>
+            <th>備考欄</th>
         </tr>
+
         {% for r in records %}
         <tr>
             <td>{{ r.name }}</td>
             <td>{{ r.classroom }}</td>
-            <td>{{ r.reason or '' }}</td>
-            <td>{{ '✔️' if r.document_submitted else '' }}</td>
+            <td><textarea>{{ r.reason or '' }}</textarea></td>
+            <td><textarea></textarea></td>
+            <td>{% if r.document_submitted %}✔️{% endif %}</td>
+            <td></td>
+            <td></td>
         </tr>
         {% endfor %}
     </table>
-</body>
-</html>
+{% endblock %}

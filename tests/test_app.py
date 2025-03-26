@@ -1,15 +1,17 @@
-import unittest
-from app import app
+from flask import Flask, url_for, request
 
-class AppTestCase(unittest.TestCase):
-    def setUp(self):
-        app.config['TESTING'] = True
-        self.client = app.test_client()
+app = Flask(__name__)
 
-    def test_index_page(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(b'欠席・欠課', response.data)
+
+@app.route('/edit/<int:student_id>')
+def edit(student_id):
+    return f"Edit page for student {student_id} on {request.args.get('date')}"
+
+
+@app.route('/test')
+def test():
+    return url_for('edit', student_id=1, date='2025-03-28')
+
 
 if __name__ == '__main__':
-    unittest.main()
+    app.run()

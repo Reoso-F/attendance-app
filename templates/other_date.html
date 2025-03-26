@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}別日の欠席・欠課{% endblock %}
+
+{% block content %}
+<div class="centered">
+    <h2>別日の欠席・欠課</h2>
+
+    <form method="get">
+        <label><input type="date" name="date"
+                value="{{ selected_date }}" class="big-input">
+        </label>
+        <button type="submit" class="big-button">表示</button>
+    </form>
+
+    <p class="status-text">{{ selected_date }} の欠席・欠課を表示中</p>
+</div>
+
+<br>
+
+<table class="classroom-table">
+    <tr>
+        {% for i in range(1, 6) %}
+        <th>第{{ i }}教室</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for i in range(1, 6) %}
+        <td>
+            <table class="inner-table">
+                <!-- カラム名行 -->
+                <tr>
+                    <th>名前</th>
+                    <th>事由</th>
+                    <th>書類提出チェック</th>
+                    <th></th>
+                </tr>
+
+                <!-- 欠席者データ -->
+                {% for r in records if r.classroom == '第' ~ i ~ '教室' %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.reason or '' }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('toggle_submitted') }}">
+                            <input type="hidden" name="student_id" value="{{ r.student_id }}">
+                            <input type="hidden" name="date" value="{{ selected_date }}">
+                            <input type="checkbox" name="submitted" onchange="this.form.submit()"
+                                {% if r.document_submitted %}checked{% endif %}>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="action-cell">
+                            <form method="get" action="{{ url_for('edit', student_id=r.student_id) }}">
+                                <input type="hidden" name="date" value="{{ selected_date }}">
+                                <button type="submit" class="edit-button">編集</button>
+                            </form>
+                    
+                            <form method="post" action="#" onsubmit="return confirm('本当に削除しますか？');">
+                                <!-- 削除処理は後で実装 -->
+                                <input type="hidden" name="student_id" value="{{ r.student_id }}">
+                                <input type="hidden" name="date" value="{{ selected_date }}">
+                                <button type="submit" class="delete-button">削除</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+{% endblock %}
