@@ -33,7 +33,23 @@ def index():
          'reason': '体調不良', 'document_submitted': 1},
     ]
     return render_template('index.html',
-                           records=records, selected_date=selected_date)
+                           records=records,
+                           selected_date=selected_date)
+
+
+@app.route('/delete', methods=['POST'])
+def delete():
+    student_id = request.form['student_id']
+    selected_date = request.form['date']
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        DELETE FROM attendance WHERE student_id = ? AND date = ?
+    """, (student_id, selected_date))
+    conn.commit()
+
+    return redirect(url_for('other_date', date=selected_date))
 
 
 @app.route('/write')
@@ -123,7 +139,11 @@ def edit(student_id):
     """, (selected_date, student_id))
     record = cur.fetchone()
     return render_template(
-        'edit.html', record=record, student_id=student_id, date=selected_date)
+        'edit.html',
+        record=record,
+        student_id=student_id,
+        selected_date=selected_date,
+        return_to=request.args.get('from', 'index'))
 
 
 if __name__ == '__main__':
