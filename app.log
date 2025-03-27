@@ -1,0 +1,20 @@
+2025-03-27 22:28:42,441 [WARNING]  * Debugger is active!
+2025-03-27 22:28:42,445 [INFO]  * Debugger PIN: 277-903-079
+2025-03-27 22:30:58,397 [INFO]  * Detected change in '/Users/swordsamuraix/Projects/attendance_app/app.py', reloading
+2025-03-27 22:30:58,569 [WARNING]  * Debugger is active!
+2025-03-27 22:30:58,573 [INFO]  * Debugger PIN: 277-903-079
+2025-03-27 22:31:02,117 [INFO] 127.0.0.1 - - [27/Mar/2025 22:31:02] "[35m[1mGET /undelivered?date= HTTP/1.1[0m" 500 -
+2025-03-27 22:31:02,125 [INFO] 127.0.0.1 - - [27/Mar/2025 22:31:02] "[36mGET /undelivered?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-27 22:31:02,125 [INFO] 127.0.0.1 - - [27/Mar/2025 22:31:02] "[36mGET /undelivered?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-27 22:31:02,128 [INFO] 127.0.0.1 - - [27/Mar/2025 22:31:02] "GET /undelivered?__debugger__=yes&cmd=resource&f=console.png&s=5XqLCuiVT78CHgWC253o HTTP/1.1" 200 -
+2025-03-27 22:31:03,960 [INFO] 127.0.0.1 - - [27/Mar/2025 22:31:03] "[35m[1mGET /undelivered?date= HTTP/1.1[0m" 500 -
+2025-03-27 22:32:58,355 [INFO]  * Detected change in '/Users/swordsamuraix/Projects/attendance_app/app.py', reloading
+2025-03-27 22:32:58,544 [WARNING]  * Debugger is active!
+2025-03-27 22:32:58,549 [INFO]  * Debugger PIN: 277-903-079
+2025-03-27 22:32:59,850 [INFO] 127.0.0.1 - - [27/Mar/2025 22:32:59] "GET /undelivered?date= HTTP/1.1" 200 -
+2025-03-27 22:32:59,856 [INFO] 127.0.0.1 - - [27/Mar/2025 22:32:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-27 22:33:12,178 [INFO] [Toggle] student_id=5, date=2025-03-26, submitted=1
+2025-03-27 22:33:12,181 [INFO] 127.0.0.1 - - [27/Mar/2025 22:33:12] "[32mPOST /toggle-submitted HTTP/1.1[0m" 302 -
+2025-03-27 22:33:12,191 [INFO] 127.0.0.1 - - [27/Mar/2025 22:33:12] "GET /undelivered?date=2025-03-26 HTTP/1.1" 200 -
+2025-03-27 22:33:12,199 [INFO] 127.0.0.1 - - [27/Mar/2025 22:33:12] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-03-27 22:34:48,263 [INFO]  * Detected change in '/Users/swordsamuraix/Projects/attendance_app/app.py', reloading

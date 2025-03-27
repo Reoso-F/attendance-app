@@ -1,6 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-from datetime import date
+from datetime import date, datetime
+import logging
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler("app.log", encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 
 app = Flask(__name__)
 DB = 'db.sqlite3'
@@ -10,31 +21,6 @@ def get_db():
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     return conn
-
-
-@app.route('/')
-def index():
-    selected_date = request.args.get('date', date.today().isoformat())
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("""
-    SELECT s.id AS student_id, s.name, s.classroom,
-                a.reason, a.document_submitted
-    FROM students s
-    LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
-    ORDER BY s.classroom, s.name
-""", (selected_date,))
-    # records = cur.fetchall()
-    # ダミーデータ（DBがまだ空でも表示できるように）
-    records = [
-        {'name': '田中 太郎', 'classroom': 'A',
-         'reason': '', 'document_submitted': 0},
-        {'name': '山田 花子', 'classroom': 'B',
-         'reason': '体調不良', 'document_submitted': 1},
-    ]
-    return render_template('index.html',
-                           records=records,
-                           selected_date=selected_date)
 
 
 @app.route('/delete', methods=['POST'])
@@ -52,31 +38,86 @@ def delete():
     return redirect(url_for('other_date', date=selected_date))
 
 
-@app.route('/write')
+@app.route('/', methods=['GET', 'POST'])
 def write():
+    if request.method == 'POST':
+        date_val = request.form['date']
+        classroom = request.form['classroom']
+        name = request.form['name']
+        reason = request.form['reason']
+
+        with get_db() as conn:
+            cur = conn.cursor()
+            # 生徒登録（仮：重複確認なし）
+            cur.execute("INSERT INTO students (name, classroom) VALUES (?, ?)",
+                        (name, classroom))
+            student_id = cur.lastrowid
+
+            # 欠席記録登録
+            cur.execute("""
+                INSERT INTO attendance (
+                        student_id, date, reason, document_submitted)
+                VALUES (?, ?, ?, 0)
+            """, (student_id, date_val, reason))
+
+        return redirect(url_for('other_date', date=date_val))
+
     return render_template('write.html')
 
 
 @app.route('/today')
 def today():
-    return render_template('today.html')
+    raw_date = date.today()
+    selected_date = raw_date.isoformat()
+    # 「2025年03月27日（木）」形式
+    formatted_date = raw_date.strftime('%Y年%m月%d日（%a）')
 
-
-@app.route('/other-date', methods=['GET'])
-def other_date():
-    selected_date = request.args.get('date', date.today().isoformat())
     conn = get_db()
     cur = conn.cursor()
     cur.execute("""
-       SELECT s.id AS student_id, s.name, s.classroom,
-                a.reason, a.document_submitted
+        SELECT s.id as student_id, s.name,
+                s.classroom, a.reason, a.document_submitted
         FROM students s
         LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
         ORDER BY s.classroom, s.name
     """, (selected_date,))
     records = cur.fetchall()
-    return render_template('other_date.html',
-                           records=records, selected_date=selected_date)
+
+    return render_template(
+        'today.html',
+        selected_date=selected_date,
+        formatted_date=formatted_date,
+        records=records
+    )
+
+
+@app.route('/other-date')
+def other_date():
+    raw_date = request.args.get('date')
+    if not raw_date:
+        raw_date = date.today().isoformat()
+
+    # 曜日つき日付の整形
+    parsed_date = date.fromisoformat(raw_date)
+    formatted_date = parsed_date.strftime('%Y年%m月%d日（%a）')
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT s.id as student_id, s.name, s.classroom,
+                a.reason, a.document_submitted
+        FROM students s
+        LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
+        ORDER BY s.classroom, s.name
+    """, (raw_date,))
+    records = cur.fetchall()
+
+    return render_template(
+        'other_date.html',
+        selected_date=raw_date,
+        formatted_date=formatted_date,
+        records=records
+    )
 
 
 @app.route('/toggle-submitted', methods=['POST'])
@@ -84,6 +125,12 @@ def toggle_submitted():
     student_id = request.form['student_id']
     date_val = request.form['date']
     submitted = 1 if 'submitted' in request.form else 0
+    return_to = request.form.get('from', 'other_date')
+
+    logging.info(
+        "[Toggle] student_id=%s,date=$s,submitted=%s",
+        student_id, date_val, submitted
+        )
 
     conn = get_db()
     cur = conn.cursor()
@@ -95,17 +142,62 @@ def toggle_submitted():
     """, (student_id, date_val, submitted, submitted))
     conn.commit()
 
-    return redirect(url_for('other_date', date=date_val))
+    return redirect(url_for(return_to, date=date_val))
 
 
 @app.route('/undelivered')
 def undelivered():
-    return render_template('undelivered.html')
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT s.id AS student_id, s.name, s.classroom,
+               a.reason, a.document_submitted, a.date
+        FROM students s
+        JOIN attendance a ON s.id = a.student_id
+        WHERE a.document_submitted = 0
+              AND a.reason IS NOT NULL AND TRIM(a.reason) != ''
+              AND DATE(a.date) < DATE('now')
+        ORDER BY s.classroom, a.date
+    """)
+    rows = cur.fetchall()
+
+    # Rowオブジェクトを辞書に変換してから加工
+    records = []
+    for r in rows:
+        record = dict(r)
+        date_val = record["date"]
+        if isinstance(date_val, str):
+            dt = datetime.strptime(date_val, "%Y-%m-%d").date()
+        else:
+            dt = date_val
+        record["formatted_date"] = dt.strftime("%Y年%m月%d日")
+        records.append(record)
+
+    return render_template('undelivered.html', records=records)
 
 
-@app.route('/range')
+@app.route('/range', methods=['GET'])
 def range_view():
-    return render_template('range.html')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    records = []
+
+    if start_date and end_date:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT s.name, s.classroom, a.reason, a.date, a.document_submitted
+            FROM students s
+            JOIN attendance a ON s.id = a.student_id
+            WHERE a.date BETWEEN ? AND ?
+            ORDER BY s.classroom, a.date, s.name
+        """, (start_date, end_date))
+        records = cur.fetchall()
+
+    return render_template('range.html',
+                           start_date=start_date,
+                           end_date=end_date,
+                           records=records)
 
 
 @app.route('/edit/<int:student_id>', methods=['GET', 'POST'])
@@ -128,7 +220,7 @@ def edit(student_id):
         """, (student_id, selected_date, reason, submitted))
 
         conn.commit()
-        return redirect(url_for('index', date=selected_date))
+        return redirect(url_for('other_date', date=selected_date))
 
     # GETメソッドの場合：現在の値を取得してフォームに表示
     cur.execute("""

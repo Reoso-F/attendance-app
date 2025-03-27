@@ -1,8 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head><title>指定期間の欠席・欠課</title></head>
-<body>
-    <h2>指定期間の欠席・欠課（仮）</h2>
-    <a href="/">← 戻る</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}指定期間の欠席・欠課{% endblock %}
+
+{% block content %}
+<div class="centered">
+    <h2 class="page-title">指定期間の欠席・欠課</h2>
+    <p class="notice-text">※ここでは情報の修正ができません</p>
+
+    <form method="get">
+        <input type="date" name="start_date" value="{{ start_date or '' }}">
+        〜
+        <input type="date" name="end_date" value="{{ end_date or '' }}">
+        <button type="submit" class="big-button">表示</button>
+    </form>
+</div>
+
+{% if records %}
+<br>
+<table class="classroom-table">
+    <tr>
+        {% for i in range(1, 6) %}
+        <th>第{{ i }}教室</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for i in range(1, 6) %}
+        {% set classroom_name = '第' ~ i ~ '教室' %}
+        <td>
+            <table class="inner-table student-table">
+                <tr>
+                    <th>名前</th>
+                    <th>事由</th>
+                    <th>発生日</th>
+                    <th>書類提出状況</th>
+                </tr>
+                {% for r in records if r.classroom == classroom_name %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.reason }}</td>
+                    <td>{{ r.date }}</td>
+                    <td>{% if r.document_submitted %}✔️{% else %}❌{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+{% endif %}
+{% endblock %}

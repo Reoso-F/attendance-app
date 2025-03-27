@@ -3,17 +3,15 @@
 {% block title %}別日の欠席・欠課{% endblock %}
 
 {% block content %}
-<div class="centered">
-    <h2>別日の欠席・欠課</h2>
+<h2 class="centered">別日の欠席・欠課</h2>
 
+<div class="centered">
     <form method="get">
-        <label><input type="date" name="date"
-                value="{{ selected_date }}" class="big-input">
-        </label>
+        <input type="date" name="date" value="{{ selected_date }}" class="big-input">
         <button type="submit" class="big-button">表示</button>
     </form>
 
-    <p class="status-text">{{ selected_date }} の欠席・欠課を表示中</p>
+    <p class="centered-date">{{ formatted_date }} の欠席・欠課を表示中</p>
 </div>
 
 <br>

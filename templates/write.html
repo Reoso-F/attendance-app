@@ -1,8 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head><title>書き込み</title></head>
-<body>
-    <h2>書き込みページ（仮）</h2>
-    <a href="/">← 戻る</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}欠席・欠課情報入力{% endblock %}
+
+{% block content %}
+<h2>欠席・欠課情報入力</h2>
+
+<form method="post">
+    <label>日時：
+        <input type="date" name="date" value="{{ request.form.date or '' }}">
+    </label><br><br>
+
+    <label>所属教室：
+        <select name="classroom">
+            <option value="第1教室">第1教室</option>
+            <option value="第2教室">第2教室</option>
+            <option value="第3教室">第3教室</option>
+            <option value="第4教室">第4教室</option>
+            <option value="第5教室">第5教室</option>
+        </select>
+    </label><br><br>
+
+    <label>名前：
+        <input type="text" name="name">
+    </label><br><br>
+
+    <label>事由：
+        <textarea name="reason" rows="3" cols="40"></textarea>
+    </label><br><br>
+
+    <button type="submit" class="big-button">登録</button>
+</form>
+{% endblock %}

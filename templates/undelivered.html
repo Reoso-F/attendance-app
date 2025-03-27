@@ -1,8 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head><title>書類未提出一覧</title></head>
-<body>
-    <h2>書類未提出一覧（仮）</h2>
-    <a href="/">← 戻る</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}今日以前の書類未提出一覧{% endblock %}
+
+{% block content %}
+<h2 class="centered">今日以前の書類未提出一覧</h2>
+
+<table class="classroom-table">
+    <tr>
+        {% for i in range(1, 6) %}
+        <th>第{{ i }}教室</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for i in range(1, 6) %}
+        {% set classroom_name = '第' ~ i ~ '教室' %}
+        <td>
+            <table class="inner-table student-table">
+                <!-- カラム名行 -->
+                <tr>
+                    <th>名前</th>
+                    <th>事由</th>
+                    <th>書類提出チェック</th>
+                    <th>日付</th>
+                </tr>
+                <!-- 書類未提出者データ -->
+                {% for r in records if r.classroom == classroom_name and r.reason %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.reason or '' }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('toggle_submitted') }}">
+                            <input type="hidden" name="student_id" value="{{ r.student_id }}">
+                            <input type="hidden" name="date" value="{{ r.date }}">
+                            <input type="hidden" name="from" value="undelivered">
+                            <input type="checkbox" name="submitted" onchange="this.form.submit()"
+                                {% if r.document_submitted %}checked{% endif %}>
+                        </form>
+                    </td>
+                    <td>{{ r.formatted_date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+{% endblock %}
