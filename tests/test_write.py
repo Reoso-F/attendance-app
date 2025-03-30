@@ -9,9 +9,6 @@ from views.write import write_bp
 
 @pytest.fixture
 def app():
-    from views.attendance import attendance_bp
-    app.register_blueptinr(attendance_bp)
-    # Create a test DB with a temporary file
     db_fd, db_path = tempfile.mkstemp()
 
     app = Flask(__name__)
@@ -31,9 +28,7 @@ def app():
     models.db.get_db = get_test_db
 
     with app.app_context():
-        schema_path = os.path.join(
-            os.path.dirname(__file__), '..', 'schema.sql')
-        init_db(app, schema_path=schema_path)
+        init_db(app, schema_path='schema.sql')
 
     yield app
 
