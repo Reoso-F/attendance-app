@@ -1,0 +1,36 @@
+# Pythonキャッシュ
+__pycache__/
+*.py[cod]
+*.so
+
+# 仮想環境
+.venv/
+venv/
+env/
+.env/
+
+# エディタ系
+.vscode/
+.idea/
+
+# OS系
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ビルド/テスト
+*.log
+*.coverage
+htmlcov/
+dist/
+build/
+
+# 型チェッカー
+.mypy_cache/
+.pyright/
+
+# 📦 データディレクトリ（中身は無視、構造は保持）
+data/*
+!data/.gitkeep
