@@ -40,6 +40,16 @@ Flask + SQLite を使って開発中。
 
 ---
 
+✨ 主な更新内容（2025/03/31）
+	•	views/ディレクトリ内の各ルートをBlueprintごとにモジュールへ分離。
+	•	toggle_submitted.py を新規作成し、POST処理のロジックを分離。
+	•	URLエンドポイントの命名を明示的に変更し、url_forの解決エラーを修正。
+	•	app.py を create_app() ベースに整理。
+	•	不要となった attendance.py を廃止。
+	•	ルーティングに依存するテストの準備環境を整理中。
+
+---
+
 ## 🔜 今後のTODO（メモ）
 
 - ページ間遷移時のUX改善
@@ -63,30 +73,31 @@ Flask + SQLite を使って開発中。
 
 ## 📁 ファイル構成（リファクタリング後）
 attendance_app/
-├── app.py                    # Flaskアプリ本体（エントリーポイント）
-├── schema.sql                # DB初期スキーマ
-├── db.sqlite3                # SQLite DB（初回はスクリプトで生成）
+├── app.py                  # アプリ起動用エントリポイント
 ├── models/
-│   └── db.py                 # DB接続・初期化関連
-├── views/                    # 各ページごとのBlueprint構成
-│   ├── write.py              # 書き込み画面（/）
-│   ├── attendance.py         # today, other-date, toggleなど
-│   ├── edit.py               # 編集処理
-│   └── undelivered.py        # 書類未提出者の一覧
-├── templates/                # HTMLテンプレート（Jinja2）
-│   ├── base.html
-│   ├── write.html
-│   ├── today.html
-│   ├── other_date.html
-│   ├── undelivered.html
-│   └── range.html
+│   └── db.py               # DB接続と初期化処理
+├── views/
+│   ├── __init__.py         # Blueprintの一括登録
+│   ├── write.py            # 登録ページ
+│   ├── today.py            # 本日ページ
+│   ├── other_date.py       # 任意日ページ
+│   ├── undelivered.py      # 書類未提出者一覧
+│   ├── edit.py             # 出席情報の編集
+│   ├── range_view.py       # 期間指定閲覧
+│   ├── delete.py           # レコード削除(生徒の登録じゃないよ)
+│   └── toggle_submitted.py # 書類提出済みフラグのトグル
+├── templates/
+│   └── *.html              # 各テンプレート
 ├── static/
 │   └── style.css             # 全体CSS
 ├── tests/                    # テストディレクトリ（pytest）
 │   ├── test_app.py
 │   ├── test_db.py
 │   └── test_write.py
-├── README.md                 # 本ドキュメント
+├── schema.sql              # DB初期化用SQL
+├── db.sqlite3                # SQLite DB（初回はスクリプトで生成）
+├── tests/                  # Pytest用のテストコード群
+└── README.md               # このファイル
 └── requirements.txt          # ライブラリ一覧
 ---
 

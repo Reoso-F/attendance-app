@@ -9,11 +9,13 @@
 
 <nav>
     <ul>
-        <li><a href="{{ url_for('write') }}">書き込み</a></li>
-        <li><a href="{{ url_for('today') }}">本日の欠席・欠課</a></li>
-        <li><a href="{{ url_for('other_date') }}">別日の欠席・欠課</a></li>
-        <li><a href="{{ url_for('undelivered') }}">書類未提出一覧</a></li>
-        <li><a href="{{ url_for('range_view') }}">指定期間の欠席・欠課</a></li>
+        <li><a href="{{ url_for('write.write') }}">書き込み</a></li>
+        <li><a href="{{ url_for('today.today') }}">本日の欠席・欠課</a></li>
+        <li><a href="{{ url_for('other_date.other_date') }}">別日の欠席・欠課</a></li>
+        <li><a href="{{ url_for('undelivered.undelivered') }}">
+            書類未提出一覧</a></li>
+        <li><a href="{{ url_for('range.view_range') }}">
+            指定期間の欠席・欠課</a></li>
     </ul>
 </nav>
 

@@ -2,13 +2,15 @@ from flask import Blueprint, render_template
 from models.db import get_db
 from datetime import datetime
 
-undelivered_bp = Blueprint('undelivered', __name__)
+undelivered_bp = Blueprint("undelivered", __name__)
 
-@undelivered_bp.route('/undelivered')
+
+@undelivered_bp.route("/undelivered")
 def undelivered():
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         SELECT s.id AS student_id, s.name, s.classroom,
                a.reason, a.document_submitted, a.date
         FROM students s
@@ -17,7 +19,8 @@ def undelivered():
               AND a.reason IS NOT NULL AND TRIM(a.reason) != ''
               AND DATE(a.date) < DATE('now')
         ORDER BY s.classroom, a.date
-    """)
+    """
+    )
     rows = cur.fetchall()
 
     records = []
@@ -31,4 +34,4 @@ def undelivered():
         record["formatted_date"] = dt.strftime("%Y年%m月%d日")
         records.append(record)
 
-    return render_template('undeliverd.html', records=records)
+    return render_template("undelivered.html", records=records)

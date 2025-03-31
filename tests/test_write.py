@@ -25,15 +25,16 @@ def app():
 
     # Replace like a monkey patch
     import models.db
+
     models.db.get_db = get_test_db
 
     with app.app_context():
-        init_db(app, schema_path='schema.sql')
+        init_db(app, schema_path="schema.sql")
 
     yield app
 
     os.close(db_fd)
-    os.unlink(db_path)    # Delete after testing
+    os.unlink(db_path)  # Delete after testing
 
 
 @pytest.fixture
@@ -43,12 +44,15 @@ def client(app):
 
 def test_write_post(client):
     # Send student and attendance information via POST
-    response = client.post("/", data={
-        "date": "2025-03-28",
-        "classroom": "第1教室",
-        "name": "テスト太郎",
-        "reason": "体調不良"
-    })
+    response = client.post(
+        "/",
+        data={
+            "date": "2025-03-28",
+            "classroom": "第1教室",
+            "name": "テスト太郎",
+            "reason": "体調不良",
+        },
+    )
 
     # Verify that the redirect was successful
     assert response.status_code == 302
@@ -61,8 +65,7 @@ def test_write_post(client):
         student = cur.fetchone()
         assert student is not None
 
-        cur.execute("SELECT * FROM attendance WHERE student_id = ?",
-                    (student["id"],))
+        cur.execute("SELECT * FROM attendance WHERE student_id = ?", (student["id"],))
         attendance = cur.fetchone()
         assert attendance is not None
         assert attendance["reason"] == "体調不良"
