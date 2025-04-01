@@ -11,35 +11,30 @@ def edit_student(student_id):
         return "日付が指定されていません", 400
 
     conn = get_db()
-    cur = conn.cursor
+    cur = conn.cursor()
 
     if request.method == "POST":
         reason = request.form["reason"]
         submitted = 1 if "submitted" in request.form else 0
 
-        cur.execute(
-            """
+        cur.execute("""
             INSERT INTO attendance (student_id, date, reason, document_submitted)
             VALUES (?, ?, ?, ?)
             ON CONFLICT(student_id, date)
             DO UPDATE SET reason=excluded.reason,
                           document_submitted=excluded.document_submitted
-        """,
-            (student_id, selected_date, reason, submitted),
-        )
+        """, (student_id, selected_date, reason, submitted))
         conn.commit()
 
-        return_to = request.args.get("from_page", "other_date")
+        return_to = request.args.get("from_page", "other_date.other_date")
         return redirect(url_for(f"attendance.{return_to}", date=selected_date))
 
-    cur.execute(
-        """
+    cur.execute("""
         SELECT s.name, s.classroom, a.reason, a.document_submitted
         FROM students s
         LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
         WHERE s.id = ?
-    """,
-        (selected_date, student_id),
+    """, (selected_date, student_id)
     )
     record = cur.fetchone()
 
@@ -51,5 +46,5 @@ def edit_student(student_id):
         record=record,
         student_id=student_id,
         selected_date=selected_date,
-        return_to=request.args.get("from", "index"),
+        return_to=request.args.get("from", "other_date.other_date"),
     )

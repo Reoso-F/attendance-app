@@ -20,15 +20,13 @@ def view_range():
 
         conn = get_db()
         cur = conn.cursor()
-        cur.execute(
-            """
+        cur.execute("""
             SELECT s.name, s.classroom, a.reason, a.date, a.document_submitted
             FROM students s
             JOIN attendance a ON s.id = a.student_id
             WHERE a.date BETWEEN ? AND ?
             ORDER BY s.classroom, a.date, s.name
-        """,
-            (start_date, end_date),
+        """, (start_date, end_date)
         )
         records = cur.fetchall()
 

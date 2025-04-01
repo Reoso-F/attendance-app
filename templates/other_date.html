@@ -40,21 +40,22 @@
                     <td>{{ r.name }}</td>
                     <td>{{ r.reason or '' }}</td>
                     <td>
-                        <form method="post" action="{{ url_for('toggle_submitted') }}">
+                        <form method="post" action="{{ url_for('toggle.toggle_submitted') }}">
                             <input type="hidden" name="student_id" value="{{ r.student_id }}">
                             <input type="hidden" name="date" value="{{ selected_date }}">
+                            <input type="hidden" name="'next" value="'{{ url_for('other_date.other_date', date=date )}}">
                             <input type="checkbox" name="submitted" onchange="this.form.submit()"
                                 {% if r.document_submitted %}checked{% endif %}>
                         </form>
                     </td>
                     <td>
                         <div class="action-cell">
-                            <form method="get" action="{{ url_for('edit',student_id=r.student_id) }}">
+                            <form method="get" action="{{ url_for('edit.edit_student',student_id=r.student_id) }}">
                                 <input type="hidden" name="date" value="{{ selected_date }}">
                                 <input type="hidden" name="from" value="other_date">
                                 <button type="submit" class="edit-button">編集</button>
                             </form>
-                            <form method="post" action="{{ url_for('delete') }}" onsubmit="return confirm('本当に削除しますか？');">
+                            <form method="post" action="{{ url_for('delete.delete') }}" onsubmit="return confirm('本当に削除しますか？');">
                                 <input type="hidden" name="student_id" value="{{ r.student_id }}">
                                 <input type="hidden" name="date" value="{{ selected_date }}">
                                 <button type="submit" class="delete-button">削除</button>
