@@ -17,24 +17,29 @@ def edit_student(student_id):
         reason = request.form["reason"]
         submitted = 1 if "submitted" in request.form else 0
 
-        cur.execute("""
+        cur.execute(
+            """
             INSERT INTO attendance (student_id, date, reason, document_submitted)
             VALUES (?, ?, ?, ?)
             ON CONFLICT(student_id, date)
             DO UPDATE SET reason=excluded.reason,
                           document_submitted=excluded.document_submitted
-        """, (student_id, selected_date, reason, submitted))
+        """,
+            (student_id, selected_date, reason, submitted),
+        )
         conn.commit()
 
         return_to = request.args.get("from_page", "other_date.other_date")
         return redirect(url_for(f"attendance.{return_to}", date=selected_date))
 
-    cur.execute("""
+    cur.execute(
+        """
         SELECT s.name, s.classroom, a.reason, a.document_submitted
         FROM students s
         LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
         WHERE s.id = ?
-    """, (selected_date, student_id)
+    """,
+        (selected_date, student_id),
     )
     record = cur.fetchone()
 

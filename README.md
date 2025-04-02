@@ -23,31 +23,33 @@ Flask + SQLite を使って開発中。
 
 ---
 
-## ✅ 現時点の進捗（2025-03-28）
+## 📁 プロジェクト構成の進捗（2025-04-02 時点）
 
-- [x] Flask + SQLite の最小構成で立ち上げ完了
-- [x] `/other-date` ページの基本レイアウトと機能実装完了
-- [x] 教室ごとの縦割りレイアウト（内側に小テーブル）
-- [x] 書類提出のチェックボックス（POSTで反映）
-- [x] 編集・削除機能つき
-- [x] `today`, `undelivered`, `range` ページ完成
-- [x] テスト環境（pytest）整備
-- [x] Blueprint を導入し `views/` ディレクトリに分割
-- [x] DB層を `models/db.py` に切り出し
-- [x] 初歩的なユニットテスト導入（`tests/`）
-- [ ] テスト未網羅の機能あり（順次追加中）
-- [ ] レスポンシブデザイン未対応
+- views/
+  - write.py：完了 ✅
+  - today.py：完了 ✅
+  - other_date.py：完了 ✅
+  - undelivered.py：完了 ✅
+  - edit.py：完了 ✅
+  - range_view.py：完了 ✅
+  - delete.py：完了 ✅
+  - toggle_submitted.py：完了 ✅
 
----
+- models/
+  - db.py：基本関数実装済 ✅
 
-✨ 主な更新内容（2025/03/31）
-	•	views/ディレクトリ内の各ルートをBlueprintごとにモジュールへ分離。
-	•	toggle_submitted.py を新規作成し、POST処理のロジックを分離。
-	•	URLエンドポイントの命名を明示的に変更し、url_forの解決エラーを修正。
-	•	app.py を create_app() ベースに整理。
-	•	不要となった attendance.py を廃止。
-	•	ルーティングに依存するテストの準備環境を整理中。
+- templates/
+  - 各ページに対応した HTML テンプレート完備 ✅
+  - チェックボックス動作確認済（today / other_date / undelivered）
 
+- scripts/
+  - check_db.py：DB内容の確認用スクリプト追加 ✅
+
+- app.py：
+  - `create_app()` を定義し、全 Blueprint 登録済 ✅
+
+- その他：
+  - `toggle_submitted` の遷移ロジックを endpointで整備 ✅
 ---
 
 ## 🔜 今後のTODO（メモ）
@@ -94,6 +96,8 @@ attendance_app/
 │   ├── test_app.py
 │   ├── test_db.py
 │   └── test_write.py
+├── scripts/
+│   └── check_db.py
 ├── schema.sql              # DB初期化用SQL
 ├── db.sqlite3                # SQLite DB（初回はスクリプトで生成）
 ├── tests/                  # Pytest用のテストコード群

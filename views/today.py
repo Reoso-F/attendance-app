@@ -13,13 +13,15 @@ def today():
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         SELECT s.id AS student_id, s.name, s.classroom,
                a.reason, a.document_submitted
         FROM students s
         LEFT JOIN attendance a ON s.id = a.student_id AND a.date = ?
         ORDER BY s.classroom, s.name
-        """, (selected_date,)
+        """,
+        (selected_date,),
     )
     records = cur.fetchall()
 

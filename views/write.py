@@ -17,7 +17,7 @@ def write():
             # 生徒登録（仮：重複確認なし）
             cur.execute(
                 "INSERT INTO students (name, classroom) VALUES (?, ?)",
-                (name, classroom)
+                (name, classroom),
             )
             student_id = cur.lastrowid
             # 欠席記録登録
@@ -27,10 +27,10 @@ def write():
                         student_id, date, reason, document_submitted)
                 VALUES (?, ?, ?, 0)
             """,
-                (student_id, date_val, reason)
+                (student_id, date_val, reason),
             )
 
         next_url = request.form.get("next")
-        return redirect(next_url or url_for('other_date.other_date', date=date_val))
+        return redirect(next_url or url_for('write.write', date=date_val))
 
     return render_template("write.html")

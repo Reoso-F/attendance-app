@@ -11,9 +11,11 @@ def delete():
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         DELETE FROM attendance WHERE student_id = ? AND date = ?
-    """, (student_id, selected_date)
+    """,
+        (student_id, selected_date),
     )
     conn.commit()
 

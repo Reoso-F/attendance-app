@@ -32,7 +32,7 @@
                         <form method="post" action="{{ url_for('toggle.toggle_submitted') }}">
                             <input type="hidden" name="student_id" value="{{ r.student_id }}">
                             <input type="hidden" name="date" value="{{ r.date }}">
-                            <input type="hidden" name="from" value="undelivered">
+                            <input type="hidden" name="from" value="undelivered.undelivered">
                             <input type="checkbox" name="submitted" onchange="this.form.submit()"
                                 {% if r.document_submitted %}checked{% endif %}>
                         </form>

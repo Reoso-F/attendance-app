@@ -9,18 +9,30 @@ def toggle_submitted():
     student_id = request.form["student_id"]
     date_val = request.form["date"]
     submitted = 1 if "submitted" in request.form else 0
-    next_url = request.form.get('next')
+    return_to = request.form.get('from')
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         INSERT INTO attendance (student_id, date, reason, document_submitted)
         VALUES (?, ?, '', ?)
         ON CONFLICT(student_id, date)
         DO UPDATE SET document_submitted = ?
-    """, (student_id, date_val, submitted, submitted)
+    """,
+        (student_id, date_val, submitted, submitted),
     )
     conn.commit()
 
-    return redirect(next_url or
-                    url_for('other_date.other_date', date=date_val))
+    endpoint_map = {
+        'today.today': url_for(
+            'today.today',
+            date=date_val,
+        ),
+        'other_date.other_date': url_for('other_date.other_date', date=date_val),
+        'undelivered.undelivered': url_for('undelivered.undelivered'),
+    }
+
+    return redirect(
+        endpoint_map.get(return_to, url_for('other_date.other_date', date=date_val))
+    )

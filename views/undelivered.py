@@ -9,7 +9,8 @@ undelivered_bp = Blueprint("undelivered", __name__)
 def undelivered():
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("""
+    cur.execute(
+        """
         SELECT s.id AS student_id, s.name, s.classroom,
                a.reason, a.document_submitted, a.date
         FROM students s
