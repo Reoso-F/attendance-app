@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, url_for
 from models.db import get_db
 
 edit_bp = Blueprint("edit", __name__)
 
 
-@edit_bp.route("/edit/<int:student_id>", methods=["GET", "POST"])
+@edit_bp.route(
+    "/edit/<int:student_id>", methods=["GET", "POST"], endpoint="edit_student"
+)
 def edit_student(student_id):
     selected_date = request.args.get("date")
     if not selected_date:
@@ -29,8 +31,14 @@ def edit_student(student_id):
         )
         conn.commit()
 
-        return_to = request.args.get("from_page", "other_date.other_date")
-        return redirect(url_for(f"attendance.{return_to}", date=selected_date))
+        return_to = request.args.get("from", "today")
+        endpoint_map = {
+            "today": "today.today",
+            "other_date": "other_date.other_date",
+        }
+        return_url = url_for(
+            endpoint_map.get(return_to, "today.today"), date=selected_date
+        )
 
     cur.execute(
         """
@@ -46,10 +54,18 @@ def edit_student(student_id):
     if not record:
         return "対象の生徒が見つかりません", 404
 
+    return_to = request.args.get("from", "today")
+    endpoint_map = {
+        "today": "today.today",
+        "other_date": "other_date.other_date",
+    }
+    return_url = url_for(endpoint_map.get(return_to, "today.today"), date=selected_date)
+
     return render_template(
         "edit.html",
         record=record,
         student_id=student_id,
         selected_date=selected_date,
-        return_to=request.args.get("from", "other_date.other_date"),
+        return_url=return_url,
+        return_to=endpoint_map.get(return_to, "today.today"),
     )

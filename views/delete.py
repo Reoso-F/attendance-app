@@ -8,6 +8,7 @@ delete_bp = Blueprint("delete", __name__)
 def delete():
     student_id = request.form["student_id"]
     selected_date = request.form["date"]
+    return_to = request.form.get('from')
 
     conn = get_db()
     cur = conn.cursor()
@@ -19,4 +20,16 @@ def delete():
     )
     conn.commit()
 
-    return redirect(url_for("attendance.other_date", date=selected_date))
+    endpoint_map = {
+        'today.today': url_for(
+            'today.today',
+            date=selected_date,
+        ),
+        'other_date.other_date': url_for('other_date.other_date', date=selected_date),
+    }
+
+    return redirect(
+        endpoint_map.get(
+            return_to, url_for('other_date.other_date', date=selected_date)
+        )
+    )

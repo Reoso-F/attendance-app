@@ -52,6 +52,7 @@
                             <form method="post" action="{{ url_for('delete.delete') }}" onsubmit="return confirm('本当に削除しますか？');">
                                 <input type="hidden" name="student_id" value="{{ r.student_id }}">
                                 <input type="hidden" name="date" value="{{ selected_date }}">
+                                <input type="hidden" name="from" value="today">
                                 <button type="submit" class="delete-button">削除</button>
                             </form>
                         </div>

@@ -34,3 +34,23 @@ build/
 # 📦 データディレクトリ（中身は無視、構造は保持）
 data/*
 !data/.gitkeep
+
+# テスト／カバレッジ
+.coverage
+htmlcov/
+.tox/
+.cache/
+pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# pip/conda build
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# その他一時ファイル
+*.bak
+*.tmp
+*.swp
