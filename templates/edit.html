@@ -16,6 +16,8 @@
     </label><br><br>
 
     <button type="submit" class="big-button">保存</button>
+    <input type="hidden" name="date" value="{{ selected_date }}">
+    
     <a href="{{ url_for(return_to, date=selected_date) }}"
         class="big-button">戻る</a>
 </form>
